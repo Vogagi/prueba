@@ -1,31 +1,675 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Mapa Cultural</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vogaĝi - Cultural Experiences</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Garet:wght@400;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #5f5ff6;
+            --accent: #d8d8fd;
+            --background: #ffffff;
+            --text-dark: #222222;
+            --text-light: #555555;
+            --border: #e0e0e0;
+            --success: #4CAF50;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8f9fe 0%, #eef1f9 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: var(--background);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Header Styles */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #7c7cf8 100%);
+            color: white;
+            padding: 25px 20px 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(95, 95, 246, 0.3);
+        }
+        
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .logo-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Garet', sans-serif;
+            font-weight: 800;
+            font-size: 28px;
+            letter-spacing: -0.5px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .app-title {
+            font-family: 'Garet', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        /* Search Bar */
+        .search-container {
+            padding: 0 20px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .search-bar {
+            display: flex;
+            background-color: white;
+            border-radius: 30px;
+            padding: 12px 20px;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            padding: 5px 0;
+        }
+        
+        .search-bar input::placeholder {
+            color: #aaa;
+            font-weight: 300;
+        }
+        
+        .search-bar i {
+            color: var(--primary);
+            font-size: 20px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        
+        /* Main Content Layout */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .main-content {
+                flex-direction: row;
+            }
+        }
+        
+        /* Filters Section */
+        .filters-section {
+            flex: 0 0 250px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+            height: fit-content;
+        }
+        
+        @media (max-width: 767px) {
+            .filters-section {
+                width: 100%;
+            }
+        }
+        
+        .section-title {
+            font-family: 'Garet', sans-serif;
+            font-weight: 700;
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-group {
+            margin-bottom: 25px;
+        }
+        
+        .filter-group h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-option input {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .filter-option label {
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+        
+        /* Events Section */
+        .events-section {
+            flex: 1;
+            padding: 0 20px;
+        }
+        
+        /* Location Visualization */
+        .location-visualization {
+            background: linear-gradient(135deg, #d8d8fd 0%, #e8e8ff 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .location-title {
+            font-family: 'Garet', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .location-map {
+            height: 300px;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .location-map i {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+        
+        .location-map h3 {
+            font-family: 'Garet', sans-serif;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .location-map p {
+            max-width: 80%;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 20px,
+                rgba(255, 255, 255, 0.1) 20px,
+                rgba(255, 255, 255, 0.1) 21px
+            );
+        }
+        
+        /* Events Grid */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .event-card {
+            background-color: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .event-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .event-category {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .event-content {
+            padding: 20px;
+        }
+        
+        .event-date {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .event-title {
+            font-family: 'Garet', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+        
+        .event-description {
+            color: var(--text-light);
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .event-location {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            color: var(--text-light);
+        }
+        
+        .event-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .event-price {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 18px;
+        }
+        
+        .book-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .book-btn:hover {
+            background-color: #4a4ae0;
+            transform: translateY(-2px);
+        }
+        
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 25px;
+            color: var(--text-light);
+            font-size: 14px;
+            border-top: 1px solid var(--border);
+            background-color: rgba(216, 216, 253, 0.1);
+            margin-top: 30px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 767px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .location-map h3 {
+                font-size: 24px;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+            
+            .app-title {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div id="map" style="width:100vw;height:100vh"></div>
-  <script>
-    // TU API KEY AQUÍ:
-    const GOOGLE_MAPS_API_KEY = "AIzaSyDw1-3gveeuBHyhDXP8KezKL1Wy-SZseuI";
-    function onReady() {
-      new google.maps.Map(document.getElementById("map"), {
-        center: {lat:41.5640, lng:2.0113},
-        zoom: 13
-      });
-    }
-    function loadMap() {
-      if (window.google && window.google.maps) return onReady();
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=onReady`;
-      script.async = true;
-      window.onReady = onReady;
-      document.head.appendChild(script);
-    }
-    window.addEventListener("DOMContentLoaded", loadMap);
-  </script>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo">Vogaĝi</div>
+                </div>
+                <div class="app-title">Cultural Experiences in Terrassa</div>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <div class="search-bar">
+                        <input type="text" id="search-input" placeholder="Search for events or locations...">
+                        <i class="fas fa-search" id="search-btn"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <h2 class="section-title">
+                    <i class="fas fa-filter"></i>
+                    Filters
+                </h2>
+                
+                <div class="filter-group">
+                    <h3><i class="fas fa-calendar"></i> Date</h3>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="checkbox" id="today" checked>
+                            <label for="today">Today</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="tomorrow">
+                            <label for="tomorrow">Tomorrow</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="weekend">
+                            <label for="weekend">This Weekend</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="next-week">
+                            <label for="next-week">Next Week</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3><i class="fas fa-tag"></i> Category</h3>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="checkbox" id="music" checked>
+                            <label for="music">Music</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="art" checked>
+                            <label for="art">Art</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="tradition" checked>
+                            <label for="tradition">Tradition</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="history" checked>
+                            <label for="history">History</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="food" checked>
+                            <label for="food">Food</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="family" checked>
+                            <label for="family">Family</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3><i class="fas fa-euro-sign"></i> Price</h3>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="checkbox" id="free" checked>
+                            <label for="free">Free</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="paid" checked>
+                            <label for="paid">Paid</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="book-btn" style="width: 100%;">
+                    <i class="fas fa-sync"></i>
+                    Apply Filters
+                </button>
+            </div>
+            
+            <!-- Events Section -->
+            <div class="events-section">
+                <!-- Location Visualization -->
+                <div class="location-visualization">
+                    <h2 class="location-title">Cultural Map of Terrassa</h2>
+                    <div class="location-map">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <h3>Interactive Cultural Map</h3>
+                        <p>Explore cultural events and heritage sites across Terrassa</p>
+                        <div class="map-overlay"></div>
+                    </div>
+                    <p>Our map visualization shows all cultural events and heritage locations in Terrassa. Click on markers to see event details.</p>
+                </div>
+                
+                <!-- Events Grid -->
+                <h2 class="section-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    Upcoming Events
+                </h2>
+                
+                <div class="events-grid" id="events-container">
+                    <!-- Events will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>© 2023 Vogaĝi Cultural Experiences. Discover the heritage of Terrassa.</p>
+            <p>All events are subject to change. Please verify with event organizers.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Sample event data for Terrassa
+        const events = [
+            {
+                id: 1,
+                title: "Medieval Market Festival",
+                description: "Step back in time at Terrassa's annual Medieval Market! Experience the atmosphere of a 14th-century marketplace with artisans, performers, and traditional food stalls.",
+                location: "Plaça Vella, Terrassa",
+                date: "July 15, 2023 • 10:00-20:00",
+                category: "Tradition",
+                price: "Free",
+                image: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)"
+            },
+            {
+                id: 2,
+                title: "Jazz Night at Masia Freixa",
+                description: "Enjoy an evening of smooth jazz in the modernist masterpiece Masia Freixa. Featuring local talents and international guest musicians.",
+                location: "Masia Freixa, Terrassa",
+                date: "July 18, 2023 • 20:30-23:00",
+                category: "Music",
+                price: "€15",
+                image: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
+            },
+            {
+                id: 3,
+                title: "Modernist Architecture Tour",
+                description: "Explore Terrassa's rich modernist heritage with expert guides. Visit iconic buildings and learn about the city's industrial past.",
+                location: "City Center, Terrassa",
+                date: "July 20, 2023 • 10:00-13:00",
+                category: "History",
+                price: "€10",
+                image: "linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)"
+            },
+            {
+                id: 4,
+                title: "Traditional Catalan Cooking Class",
+                description: "Learn to prepare traditional Catalan dishes in this hands-on workshop with local chefs. Includes tasting of your creations.",
+                location: "Local Kitchen, Terrassa",
+                date: "July 22, 2023 • 18:00-20:30",
+                category: "Food",
+                price: "€25",
+                image: "linear-gradient(135deg, #d299c2 0%, #fef9d7 100%)"
+            },
+            {
+                id: 5,
+                title: "Roman Ruins Guided Visit",
+                description: "Guided tour of Terrassa's Roman heritage sites. Discover the ancient history of Égara and see well-preserved mosaics.",
+                location: "Roman Tower, Terrassa",
+                date: "July 25, 2023 • 11:00-13:00",
+                category: "History",
+                price: "€8",
+                image: "linear-gradient(135deg, #f6d365 0%, #fda085 100%)"
+            },
+            {
+                id: 6,
+                title: "Children's Folk Tales Theater",
+                description: "Interactive theater performance for children based on Catalan folk tales and legends. Fun for the whole family!",
+                location: "Teatre Principal, Terrassa",
+                date: "July 28, 2023 • 17:00-18:30",
+                category: "Family",
+                price: "€5",
+                image: "linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)"
+            }
+        ];
+        
+        // Render events to the page
+        function renderEvents() {
+            const container = document.getElementById('events-container');
+            container.innerHTML = '';
+            
+            events.forEach(event => {
+                const eventCard = document.createElement('div');
+                eventCard.className = 'event-card';
+                
+                eventCard.innerHTML = `
+                    <div class="event-image" style="background-image: ${event.image};">
+                        <span class="event-category">${event.category}</span>
+                    </div>
+                    <div class="event-content">
+                        <div class="event-date">
+                            <i class="fas fa-calendar-alt"></i>
+                            ${event.date}
+                        </div>
+                        <h3 class="event-title">${event.title}</h3>
+                        <p class="event-description">${event.description}</p>
+                        <div class="event-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            ${event.location}
+                        </div>
+                        <div class="event-meta">
+                            <div class="event-price">${event.price}</div>
+                            <button class="book-btn">
+                                <i class="fas fa-ticket-alt"></i>
+                                Book Now
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(eventCard);
+            });
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            renderEvents();
+            setupEventListeners();
+        });
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Search functionality
+            const searchInput = document.getElementById('search-input');
+            const searchBtn = document.getElementById('search-btn');
+            
+            searchBtn.addEventListener('click', function() {
+                // In a real app, this would filter events
+                alert(`Searching for: "${searchInput.value}"`);
+            });
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    alert(`Searching for: "${searchInput.value}"`);
+                }
+            });
+            
+            // Book buttons
+            document.querySelectorAll('.book-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const eventCard = this.closest('.event-card');
+                    const eventTitle = eventCard.querySelector('.event-title').textContent;
+                    alert(`Booking confirmed for: "${eventTitle}"`);
+                });
+            });
+        }
+    </script>
 </body>
 </html>
